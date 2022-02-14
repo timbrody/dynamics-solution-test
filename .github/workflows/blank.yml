@@ -37,8 +37,8 @@ jobs:
         uses: microsoft/powerplatform-actions/who-am-i@v0
         with:
           environment-url: 'https://org8858af45.crm11.dynamics.com'
-          app-id: '5831c8da-3497-439c-9f4e-e33e7c5fc31b'
-          tenant-id: '4a5378f9-29f4-4d3e-be89-669d03ada9d8'
+          app-id: ${{env.WF_APPLICATION_ID}}
+          tenant-id: ${{env.WF_TENANT_ID}}
           client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
 
       - name: Export Solution
