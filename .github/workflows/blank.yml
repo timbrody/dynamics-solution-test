@@ -25,6 +25,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Export Solution
+        uses: microsoft/powerplatform-actions/export-solution@v0
+        with:
+          environment-url: 'https://org8858af45.crm11.dynamics.com'
+          user-name: 'me@myenv.onmicrosoft.com'
+          password-secret: ${{ secrets.MYPASSWORD }}
+          solution-name: aSolution
+          solution-output-file: 'aSolution.zip'
+          working-directory: 'out'
+        
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
