@@ -26,8 +26,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Connection Test
+        uses: microsoft/powerplatform-actions/who-am-i@0
+        with:
+          environment-url: 'https://org8858af45.crm11.dynamics.com'
+          app-id: '5831c8da-3497-439c-9f4e-e33e7c5fc31b'
+          tenant-id: '4a5378f9-29f4-4d3e-be89-669d03ada9d8'
+          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
 
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v0
@@ -40,13 +45,8 @@ jobs:
           solution-output-file: 'aSolution.zip'
           working-directory: 'out'
         
-      - name: Connection Test
-        uses: microsoft/powerplatform-actions/who-am-i@0.4.0
-        with:
-          environment-url: 'https://org8858af45.crm11.dynamics.com'
-          app-id: $WF_APPLICATION_ID
-          tenant-id: $WF_TENANT_ID
-          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
