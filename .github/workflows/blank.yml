@@ -5,6 +5,7 @@ name: CI
 env:
   WF_APPLICATION_ID: 5831c8da-3497-439c-9f4e-e33e7c5fc31b
   WF_TENANT_ID: 4a5378f9-29f4-4d3e-be89-669d03ada9d8
+  WF_DYNAMICS_URL: 'https://org8858af45.crm11.dynamics.com'
 
 # Controls when the workflow will run
 on:
@@ -33,18 +34,18 @@ jobs:
         with:
           lfs: true
         
-      - name: Connection Test
-        uses: microsoft/powerplatform-actions/who-am-i@v0
-        with:
-          environment-url: 'https://org8858af45.crm11.dynamics.com'
-          app-id: ${{env.WF_APPLICATION_ID}}
-          tenant-id: ${{env.WF_TENANT_ID}}
-          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
+#      - name: Connection Test
+#        uses: microsoft/powerplatform-actions/who-am-i@v0
+#        with:
+#          environment-url: ${{env.WF_DYNAMICS_URL}}
+#          app-id: ${{env.WF_APPLICATION_ID}}
+#          tenant-id: ${{env.WF_TENANT_ID}}
+#          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
 
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v0
         with:
-          environment-url: 'https://org8858af45.crm11.dynamics.com'
+          environment-url: ${{env.WF_DYNAMICS_URL}}
           app-id: ${{env.WF_APPLICATION_ID}}
           tenant-id: ${{env.WF_TENANT_ID}}
           client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
