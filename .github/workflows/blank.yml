@@ -17,7 +17,26 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+    inputs:
+      # Change this value
+      solution_name:
+        description: 'name of the solution to worked on from Power Platform'
+        required: true
+        default: aSolution
+       #Do Not change these values
+      solution_exported_folder:
+        description: 'folder name for staging the exported solution *do not change*'
+        required: true
+        default: out/exported/
+      solution_folder:
+        description: 'staging the unpacked solution folder before check-in *do not change*'
+        required: true
+        default: out/solutions/
+      solution_target_folder:
+       description: 'folder name to be created and checked in *do not change*'
+       required: true
+       default: solutions/
+       
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -34,7 +53,7 @@ jobs:
         with:
           lfs: true
         
-      - name: Connection Test
+      - name: who-am-i
         uses: microsoft/powerplatform-actions/who-am-i@0.4.0
         with:
           environment-url: ${{env.WF_DYNAMICS_URL}}
@@ -42,23 +61,29 @@ jobs:
           tenant-id: ${{env.WF_TENANT_ID}}
           client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
 
-      - name: Export Solution
+      - name: export-solution
         uses: microsoft/powerplatform-actions/export-solution@0.4.0
         with:
           environment-url: ${{env.WF_DYNAMICS_URL}}
           app-id: ${{env.WF_APPLICATION_ID}}
           tenant-id: ${{env.WF_TENANT_ID}}
           client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
-          solution-name: aSolution
-          solution-output-file: 'aSolution.zip'
-          working-directory: 'out'
+          solution-name: ${{ github.event.inputs.solution_name }}
+          solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+          working-directory: 'out/exported'
         
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: unpack-solution
+        uses: microsoft/powerplatform-actions/unpack-solution@0.4.0
+        with:
+          solution-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+          solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}
+          solution-type: 'Unmanaged'
+          overwrite-files: true
+        
+      - name: branch-solution, prepare it for a PullRequest
+        uses: microsoft/powerplatform-actions/branch-solution@0.4.0
+        with:
+          solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}
+          solution-target-folder: ${{ github.event.inputs.solution_target_folder}}/${{ github.event.inputs.solution_name }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-empty-commit: true
