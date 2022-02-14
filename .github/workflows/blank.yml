@@ -45,8 +45,8 @@ jobs:
         uses: microsoft/powerplatform-actions/export-solution@v0
         with:
           environment-url: 'https://org8858af45.crm11.dynamics.com'
-          app-id: $WF_APPLICATION_ID
-          tenant-id: $WF_TENANT_ID
+          app-id: ${{env.WF_APPLICATION_ID}}
+          tenant-id: ${{env.WF_TENANT_ID}}
           client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
           solution-name: aSolution
           solution-output-file: 'aSolution.zip'
