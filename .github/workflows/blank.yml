@@ -4,6 +4,7 @@ name: CI
 
 env:
   WF_APPLICATION_ID: 5831c8da-3497-439c-9f4e-e33e7c5fc31b
+  WF_TENANT_ID: 4a5378f9-29f4-4d3e-be89-669d03ada9d8
 
 # Controls when the workflow will run
 on:
@@ -28,12 +29,21 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Connection Test
+        uses: microsoft/powerplatform-actions/whoAmI@v0
+        with:
+          environment-url: 'https://org8858af45.crm11.dynamics.com'
+          app-id: $WF_APPLICATION_ID
+          tenant-id: $WF_TENANT_ID
+          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
+
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v0
         with:
           environment-url: 'https://org8858af45.crm11.dynamics.com'
-          user-name: 'me@myenv.onmicrosoft.com'
-          password-secret: ${{ secrets.MYPASSWORD }}
+          app-id: $WF_APPLICATION_ID
+          tenant-id: $WF_TENANT_ID
+          client-secret: ${{secrets.CLIENT_SECRET_GITHUB_ACTIONS}}
           solution-name: aSolution
           solution-output-file: 'aSolution.zip'
           working-directory: 'out'
